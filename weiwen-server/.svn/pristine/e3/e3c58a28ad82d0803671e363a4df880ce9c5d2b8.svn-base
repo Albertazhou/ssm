@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.EventOrganizationMapper" >
+  <resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.EventOrganization" >
+    <result column="event_id" property="eventId" jdbcType="INTEGER" />
+    <result column="org_id" property="orgId" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="TINYINT" />
+  </resultMap>
+  
+  <resultMap type="com.cetc.weiwen.vo.EventOrganizationVo" id="BaseResultMapVo">
+  	<result column="event_id" property="eventId" jdbcType="INTEGER" />
+    <result column="type" property="orgType" jdbcType="TINYINT" />
+    <association property="organization" column="{id=org_id}"
+    	select="com.cetc.weiwen.mapper.OrganizationMapper.getOrganizationById"></association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    event_id, org_id, type
+  </sql>
+  
+  <select id="findEventOrganizationByEventId" resultMap="BaseResultMap">
+     select 
+     <include refid="Base_Column_List"></include>
+     from event_organization
+     where event_id=#{eventId,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insert" parameterType="com.cetc.weiwen.entity.EventOrganization" >
+    insert into event_organization (event_id, org_id, type
+      )
+    values (#{eventId,jdbcType=INTEGER}, #{orgId,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cetc.weiwen.entity.EventOrganization" >
+    insert into event_organization
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="eventId != null" >
+        event_id,
+      </if>
+      <if test="orgId != null" >
+        org_id,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="eventId != null" >
+        #{eventId,jdbcType=INTEGER},
+      </if>
+      <if test="orgId != null" >
+        #{orgId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  
+  <insert id="batchInsertEventOrg" parameterType="com.cetc.weiwen.entity.EventOrganization">
+  	insert into event_organization (event_id,org_id,type)
+    values
+    <foreach collection="list" index="index" item="eventOrg" separator=",">
+    (#{eventOrg.eventId,jdbcType=INTEGER}, #{eventOrg.orgId,jdbcType=INTEGER}, #{eventOrg.type,jdbcType=TINYINT})
+    </foreach>
+  </insert>
+  
+  <select id="getEventOrgVoList" resultMap="BaseResultMapVo"
+  	parameterType="com.cetc.weiwen.entity.EventOrganization">
+  	select
+  	<include refid="Base_Column_List"></include>
+  	from event_organization
+  	<where>
+  		<if test="eventId != null">
+  			event_id = #{eventId,jdbcType=INTEGER}
+  		</if>
+  		<if test="orgId != null">
+  			and org_id = #{orgId,jdbcType=INTEGER}
+  		</if>
+  		<if test="type != null">
+  			and type = #{type,jdbcType=TINYINT}
+  		</if>
+  	</where>
+  </select>
+  <delete id="batchDeleteEventOrg">
+	  delete from event_organization
+  	  where event_id = #{eventId,jdbcType=INTEGER} and org_id in
+  	  <foreach collection="ids" item="item" open="(" separator="," close=")"  >
+	    #{item,jdbcType=INTEGER}
+	  </foreach>
+  </delete>
+</mapper>

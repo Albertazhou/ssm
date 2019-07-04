@@ -1,0 +1,262 @@
+package com.cetc.weiwen.service.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.cetc.weiwen.commons.constant.Constant;
+import com.cetc.weiwen.commons.utils.HanyuPinyinHelper;
+import com.cetc.weiwen.commons.utils.IdGen;
+import com.cetc.weiwen.commons.utils.MD5Util;
+import com.cetc.weiwen.commons.utils.RedisUtils;
+import com.cetc.weiwen.entity.Event;
+import com.cetc.weiwen.entity.User;
+import com.cetc.weiwen.exception.GlobalException;
+import com.cetc.weiwen.mapper.EventMapper;
+import com.cetc.weiwen.mapper.UserMapper;
+import com.cetc.weiwen.result.CodeMsg;
+import com.cetc.weiwen.service.EventService;
+import com.cetc.weiwen.service.UserService;
+import com.cetc.weiwen.vo.UserVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
+/**
+ * 用户业务层
+ * 
+ * @author jhl
+ * @date 2018年7月31日 下午3:31:27
+ * @version 1.0
+ * @Modified Date 2018/8/6
+ *
+ */
+@Service
+public class UserServiceImpl implements UserService {
+
+	protected static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
+	@Autowired
+	private UserMapper userMapper;
+
+	@Autowired
+	private EventService eventService;
+	
+	@Autowired
+	private EventMapper eventMapper;
+
+	@Override
+	public int deleteById(Integer id) {
+		// TODO Auto-generated method stub
+		return userMapper.updateByIdAndStatus(id);
+	}
+
+	@Override
+	public int insertUser(User user) {
+		// TODO Auto-generated method stub
+		return userMapper.insert(user);
+	}
+
+	@Override
+	public int insertPartUser(User user) {
+		// TODO Auto-generated method stub
+		user.setLastEditTime(new Date());
+		user.setCreateTime(new Date());
+		user.setStatus(1);
+		/*生成拼音用户名*/
+		String pinyName=HanyuPinyinHelper.toHanyuPinyin(user.getRealName());
+		user.setPinyName(pinyName);
+		User u=userMapper.queryUserByPhone(user.getPhone());
+		if(u!=null) {
+			return -2;
+		}
+		// 生成随机密码 后续使用RandomPassword.getRandomPassword(8)
+		user.setPassword(MD5Util.MD5("12345678"));
+		//手机号码就是用户名
+		user.setUsername(user.getPhone());
+		int code = userMapper.insertSelective(user);
+		if (code > 0) {
+			// todo发送短信和电子邮件通知用户自己的用户名和密码
+			return 1;
+		}
+		return 0;
+	}
+
+	@Override
+	public UserVo queryUserById(Integer id) {
+		// TODO Auto-generated method stub
+		return userMapper.queryUserById(id);
+	}
+
+	@Override
+	public int updateByUserId(User user) {
+		// TODO Auto-generated method stub
+		return 0;// userMapper.updateByUserId(user);
+	}
+
+	@Override
+	public int updateById(User user) {
+		// TODO Auto-generated method stub
+		// 参数非空检查
+		if (null == user.getId()) {
+			return 0;
+		}
+		user.setLastEditTime(new Date());
+		if(null!=user.getRealName()) {
+			user.setPinyName(HanyuPinyinHelper.toHanyuPinyin(user.getRealName()));
+		}
+		// 密码验证
+		if (null == user.getPassword() && null == user.getOldPassword()) {
+			return userMapper.updateByPrimaryKeySelective(user);
+		}
+		if (null == user.getPassword() || null == user.getOldPassword()) {
+			return -1;
+		}
+		User u = userMapper.getUserById(user.getId());
+		if (u == null) {
+			return -2;
+		}
+		if (u.getPassword().equals(MD5Util.MD5(user.getOldPassword()))) {
+			user.setPassword(MD5Util.MD5(user.getPassword()));
+			return userMapper.updateByPrimaryKeySelective(user);
+		}
+		return -1;
+	}
+
+	/**
+	 * 审核事件(群)
+	 */
+	@Override
+	public int updataEventToExamine(Integer id, Integer eventId, Event event) {
+		// TODO Auto-generated method stub
+		// @todo
+		/* 操作日志记录 */
+		
+		return 0;// eventService.updateEventById(event);
+	}
+
+	/**
+	 * 删除事件--->逻辑删除(更新事件状态)
+	 * 
+	 * @return
+	 */
+	@Override
+	public int deleteUserEvent(Integer id, Integer eventId) {
+		// TODO Auto-generated method stub
+		// 记录日志或者其他操作todo
+
+		Event event = eventService.queryEventById(eventId);
+		if (event == null) {
+			return 0;
+		}
+		// event.setChatStatus("2");
+		return 0;// eventService.updateEventById(event);
+	}
+
+	@Override
+	public PageInfo<UserVo> getUserList(Integer pageNum, Integer pageSize, String name, Integer orgId) {
+		// TODO Auto-generated method stub
+		if (pageNum == null || pageSize == null) {
+			pageNum = 1;
+			pageSize = 2000;
+		}
+
+		PageHelper.startPage(pageNum, pageSize);
+		PageHelper.orderBy("piny_name asc");
+		if (orgId != null) {
+			List<UserVo> users = userMapper.queryUserByOrgId(orgId);
+			PageInfo<UserVo> pageInfo = new PageInfo<UserVo>(users);
+			return pageInfo;
+		} else {
+			if(name!=null){
+			   String pinyName=HanyuPinyinHelper.toHanyuPinyin(name);
+			   List<UserVo> users = userMapper.queryUserByName(pinyName);
+			   PageInfo<UserVo> pageInfo = new PageInfo<UserVo>(users);
+			   return pageInfo;
+			}
+			List<UserVo> users = userMapper.queryUserByName(name);
+			PageInfo<UserVo> pageInfo = new PageInfo<UserVo>(users);
+			return pageInfo;
+		}
+	}
+	
+	@Override
+	public List<HashMap<String, Object>> getUserList(User user) {
+		List<HashMap<String, Object>> mapList;
+		try {
+			mapList = userMapper.getUserList(user);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new GlobalException(CodeMsg.SERVER_EXCEPTION);
+		}
+		return mapList;
+	}
+
+	@Override
+	public User queryUserByPhone(String phone) {
+		User user=null;
+		try {
+			user = userMapper.queryUserByPhone(phone);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new GlobalException(CodeMsg.SERVER_EXCEPTION);
+		}
+		return user;
+	}
+
+	@Override
+	public User login(User user,String userPrefix, String userTokenPrefix) {
+		if (null == user.getPhone() || null == user.getPassword()) {
+			return null;
+		}
+		User existUser = queryUserByPhone(user.getPhone());
+		if (existUser != null) {
+			// 判断密码是否正确
+			if (!existUser.getPassword().equals(MD5Util.MD5(user.getPassword()))) {
+				return null;
+			}
+			return resetToken(existUser , userPrefix, userTokenPrefix);
+		}
+		return null;
+	}
+
+	@Override
+	public int logout(String token1, String token2,Integer id,String userPrefix,String userTokenPrefix) {
+		// 判断用户token与请求头token是否一致
+		String q=userTokenPrefix + token1;
+		if (token1 != null && token2.equals(userTokenPrefix + token1)) {
+			RedisUtils.del(userPrefix + id);
+			RedisUtils.del(userTokenPrefix + token1);
+			return 1;
+		}
+		return 0;
+	}
+	
+	public User resetToken(User existUser ,String userPrefix,String userTokenPrefix) {
+		// 挤掉用户
+		if (RedisUtils.exist(userPrefix + existUser.getId())) {
+			String oldToken = RedisUtils.get(userPrefix + existUser.getId(),String.class);
+			RedisUtils.del(userPrefix + existUser.getId());
+			RedisUtils.del(userTokenPrefix + oldToken);
+		}
+		User user = existUser;
+		// 返回和缓存用户信息
+		String token = IdGen.uuid();
+		user.setToken(userTokenPrefix + token);
+		user.setPassword("");
+		RedisUtils.set(userTokenPrefix + token, user, Constant.USER_CACHE_TIME);
+		RedisUtils.set(userPrefix + user.getId(), token, Constant.USER_CACHE_TIME);
+		return user;
+	}
+
+	@Override
+	public List<Event> findUnReviewedEvent(Integer userId) {
+		// TODO Auto-generated method stub
+		return eventMapper.findUnReviewedEvent(userId);
+	}
+
+}

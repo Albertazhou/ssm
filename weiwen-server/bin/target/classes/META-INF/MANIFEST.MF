@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: weiwen-server
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: zhou
+Implementation-Vendor-Id: com.qinhigh
+Build-Jdk: 1.8.0_144
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/weiwen-server
+Created-By: Maven Integration for Eclipse
+

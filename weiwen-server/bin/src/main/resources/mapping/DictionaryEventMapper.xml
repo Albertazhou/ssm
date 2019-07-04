@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.DictionaryEventMapper" >
+  <resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.DictionaryEvent" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="uuid" property="uuid" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+  </resultMap>
+ 
+  <sql id="Base_Column_List" >
+    id, uuid, name, type
+  </sql>
+   <!-- 版本id大于eventVId的所有dictionary_event -->
+   <select id="findByVidGreaThan" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from dictionary_event
+    where id > #{eventVId,jdbcType=INTEGER}
+  </select>
+ 
+</mapper>

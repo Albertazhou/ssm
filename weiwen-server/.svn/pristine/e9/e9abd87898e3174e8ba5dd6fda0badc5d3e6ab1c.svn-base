@@ -1,0 +1,40 @@
+package com.cetc.weiwen.entity;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class FunctionType {
+    private Integer id; //	主键id
+    
+    private String uuid;//唯一标识符
+
+    private String name;//name
+    
+   
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	
+	@Override
+	public String toString() {
+		return "FunctionType [id=" + id + ", name=" + name + ", type="  + "]";
+	}
+
+   
+    
+    
+}

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.EducationMapper" >
+  <resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.Education" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="event_id" property="eventId" jdbcType="INTEGER" />
+    <result column="rank_id" property="rankId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_eidt_time" property="lastEidtTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="BaseResultMapVo" type="com.cetc.weiwen.vo.EducationVo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="event_id" property="eventId" jdbcType="INTEGER" />
+    <result column="rank_id" property="rankId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_eidt_time" property="lastEidtTime" jdbcType="TIMESTAMP" />
+    <association property="user" column="{id=user_id}"
+    	select="com.cetc.weiwen.mapper.UserMapper.getUserById"></association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, user_id, event_id, rank_id, create_time, last_eidt_time
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from education
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from education
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.cetc.weiwen.entity.Education" >
+    insert into education (id, user_id, event_id, 
+      rank_id, create_time, last_eidt_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{eventId,jdbcType=INTEGER}, 
+      #{rankId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastEidtTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cetc.weiwen.entity.Education" >
+    insert into education
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="eventId != null" >
+        event_id,
+      </if>
+      <if test="rankId != null" >
+        rank_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastEidtTime != null" >
+        last_eidt_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="eventId != null" >
+        #{eventId,jdbcType=INTEGER},
+      </if>
+      <if test="rankId != null" >
+        #{rankId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEidtTime != null" >
+        #{lastEidtTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.cetc.weiwen.entity.Education" >
+    update education
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="eventId != null" >
+        event_id = #{eventId,jdbcType=INTEGER},
+      </if>
+      <if test="rankId != null" >
+        rank_id = #{rankId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEidtTime != null" >
+        last_eidt_time = #{lastEidtTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cetc.weiwen.entity.Education" >
+    update education
+    set user_id = #{userId,jdbcType=INTEGER},
+      event_id = #{eventId,jdbcType=INTEGER},
+      rank_id = #{rankId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_eidt_time = #{lastEidtTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getEducationVoList" resultMap="BaseResultMapVo"
+  	 parameterType="com.cetc.weiwen.entity.Education">
+  	select 
+  	<include refid="Base_Column_List"></include>
+  	from education
+  	<where>
+  		<if test="eventId != null">
+  			event_id = #{eventId,jdbcType=INTEGER}
+  		</if>
+  		<if test="userId != null">
+  			and user_id = #{userId,jdbcType=INTEGER}
+  		</if>
+  		<if test="rankId != null">
+  			and rank_id = #{rankId,jdbcType=INTEGER}
+  		</if>
+  	</where>
+  </select>
+</mapper>

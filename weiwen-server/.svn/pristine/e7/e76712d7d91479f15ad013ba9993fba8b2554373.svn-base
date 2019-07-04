@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.TaskSignMapper" >
+  <resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.TaskSign" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="task_id" property="taskId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="longitude" property="longitude" jdbcType="DECIMAL" />
+    <result column="latitude" property="latitude" jdbcType="DECIMAL" />
+    <result column="arrive_time" property="arriveTime" jdbcType="TIMESTAMP" />
+    <result column="actual_address" property="actualAddress" jdbcType="VARCHAR" />
+    <result column="actual_longitude" property="actualLongitude" jdbcType="DECIMAL" />
+    <result column="actual_latitude" property="actualLatitude" jdbcType="DECIMAL" />
+    <result column="sign_time" property="signTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_edit_time" property="lastEditTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap type="com.cetc.weiwen.vo.TaskSignVo" id="BaseResultMapVo">
+  	<id column="id" property="id" jdbcType="INTEGER" />
+    <result column="task_id" property="taskId" jdbcType="INTEGER" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="longitude" property="longitude" jdbcType="DECIMAL" />
+    <result column="latitude" property="latitude" jdbcType="DECIMAL" />
+    <result column="arrive_time" property="arriveTime" jdbcType="TIMESTAMP" />
+    <result column="actual_address" property="actualAddress" jdbcType="VARCHAR" />
+    <result column="actual_longitude" property="actualLongitude" jdbcType="DECIMAL" />
+    <result column="actual_latitude" property="actualLatitude" jdbcType="DECIMAL" />
+    <result column="sign_time" property="signTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_edit_time" property="lastEditTime" jdbcType="TIMESTAMP" />
+    <association property="user" column="{id=user_id}"
+    	select="com.cetc.weiwen.mapper.UserMapper.getUserById"></association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, task_id, user_id, address, longitude, latitude, arrive_time, actual_address, 
+    actual_longitude, actual_latitude, sign_time, status, reason, create_time, last_edit_time
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from task_sign
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from task_sign
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.cetc.weiwen.entity.TaskSign" >
+    insert into task_sign (id, task_id, user_id, 
+      address, longitude, latitude, 
+      arrive_time, actual_address, actual_longitude, 
+      actual_latitude, sign_time, status, 
+      reason, create_time, last_edit_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{taskId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{address,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL}, 
+      #{arriveTime,jdbcType=TIMESTAMP}, #{actualAddress,jdbcType=VARCHAR}, #{actualLongitude,jdbcType=DECIMAL}, 
+      #{actualLatitude,jdbcType=DECIMAL}, #{signTime,jdbcType=TIMESTAMP}, #{status,jdbcType=BIT}, 
+      #{reason,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{lastEditTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cetc.weiwen.entity.TaskSign" >
+    insert into task_sign
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="longitude != null" >
+        longitude,
+      </if>
+      <if test="latitude != null" >
+        latitude,
+      </if>
+      <if test="arriveTime != null" >
+        arrive_time,
+      </if>
+      <if test="actualAddress != null" >
+        actual_address,
+      </if>
+      <if test="actualLongitude != null" >
+        actual_longitude,
+      </if>
+      <if test="actualLatitude != null" >
+        actual_latitude,
+      </if>
+      <if test="signTime != null" >
+        sign_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="reason != null" >
+        reason,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastEditTime != null" >
+        last_edit_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="taskId != null" >
+        #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="arriveTime != null" >
+        #{arriveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualAddress != null" >
+        #{actualAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="actualLongitude != null" >
+        #{actualLongitude,jdbcType=DECIMAL},
+      </if>
+      <if test="actualLatitude != null" >
+        #{actualLatitude,jdbcType=DECIMAL},
+      </if>
+      <if test="signTime != null" >
+        #{signTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditTime != null" >
+        #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.cetc.weiwen.entity.TaskSign" >
+    update task_sign
+    <set >
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="arriveTime != null" >
+        arrive_time = #{arriveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualAddress != null" >
+        actual_address = #{actualAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="actualLongitude != null" >
+        actual_longitude = #{actualLongitude,jdbcType=DECIMAL},
+      </if>
+      <if test="actualLatitude != null" >
+        actual_latitude = #{actualLatitude,jdbcType=DECIMAL},
+      </if>
+      <if test="signTime != null" >
+        sign_time = #{signTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="reason != null" >
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditTime != null" >
+        last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cetc.weiwen.entity.TaskSign" >
+    update task_sign
+    set task_id = #{taskId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      address = #{address,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      arrive_time = #{arriveTime,jdbcType=TIMESTAMP},
+      actual_address = #{actualAddress,jdbcType=VARCHAR},
+      actual_longitude = #{actualLongitude,jdbcType=DECIMAL},
+      actual_latitude = #{actualLatitude,jdbcType=DECIMAL},
+      sign_time = #{signTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=BIT},
+      reason = #{reason,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getTaskSignVoList" resultMap="BaseResultMapVo" 
+  	parameterType="com.cetc.weiwen.entity.TaskSign">
+  	select
+  	<include refid="Base_Column_List"></include>
+  	from task_sign
+  	<where>
+  		<if test="taskId != null">
+  			task_id = #{taskId,jdbcType=INTEGER}
+  		</if>
+  		<if test="userId != null">
+  			user_id = #{userId,jdbcType=INTEGER}
+  		</if>
+  	</where>
+  </select>
+</mapper>

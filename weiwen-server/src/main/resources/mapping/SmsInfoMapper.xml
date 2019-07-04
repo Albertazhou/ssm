@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.SmsInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.SmsInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="civics_idcard" property="civicsIdcard" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="INTEGER" />
+    <result column="event_id" property="eventId" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap type="com.cetc.weiwen.vo.SmsInfoVo" id="BaseResultMapVo">
+  	<id column="id" property="id" jdbcType="INTEGER" />
+    <result column="civics_idcard" property="civicsIdcard" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="INTEGER" />
+    <result column="event_id" property="eventId" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <association property="user" column="{id=user_id}"
+    	select="com.cetc.weiwen.mapper.UserMapper.getUserById"></association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, user_id, civics_idcard, task_id, event_id, content, create_time
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sms_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <insert id="batchSmsInfo" parameterType="java.util.List">
+   insert into sms_info (user_id, civics_idcard, task_id, event_id, content, create_time)
+   values
+    <foreach collection="list" item="item" index="index" separator=","> 
+         (#{item.userId,jdbcType=INTEGER},#{item.civicsIdcard,jdbcType=VARCHAR},
+         #{item.taskId,jdbcType=INTEGER},#{item.eventId,jdbcType=INTEGER},
+         #{item.content,jdbcType=INTEGER},#{item.createTime,jdbcType=TIMESTAMP}) 
+     </foreach> 
+   </insert>
+  <insert id="insert" parameterType="com.cetc.weiwen.entity.SmsInfo" >
+    insert into sms_info (id, user_id, civics_idcard, 
+      task_id, event_id, content, 
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{civicsIdcard,jdbcType=VARCHAR}, 
+      #{taskId,jdbcType=INTEGER}, #{eventId,jdbcType=INTEGER}, #{content,jdbcType=BIT}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cetc.weiwen.entity.SmsInfo" >
+    insert into sms_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="civicsIdcard != null" >
+        civics_idcard,
+      </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="eventId != null" >
+        event_id,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="civicsIdcard != null" >
+        #{civicsIdcard,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+        #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="eventId != null" >
+        #{eventId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.cetc.weiwen.entity.SmsInfo" >
+    update sms_info
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="civicsIdcard != null" >
+        civics_idcard = #{civicsIdcard,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="eventId != null" >
+        event_id = #{eventId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cetc.weiwen.entity.SmsInfo" >
+    update sms_info
+    set user_id = #{userId,jdbcType=INTEGER},
+      civics_idcard = #{civicsIdcard,jdbcType=VARCHAR},
+      task_id = #{taskId,jdbcType=INTEGER},
+      event_id = #{eventId,jdbcType=INTEGER},
+      content = #{content,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getSmsInfoVoList" resultMap="BaseResultMapVo" 
+  	parameterType="com.cetc.weiwen.entity.SmsInfo">
+  	select 
+    <include refid="Base_Column_List" />
+    from sms_info
+    <where>
+    	<if test="eventId != null">
+    		event_id = #{eventId,jdbcType=INTEGER}
+    	</if>
+    	<if test="taskId != null">
+    		and task_id = #{taskId,jdbcType=INTEGER}
+    	</if>
+    	<if test="userId != null">
+    		and user_id = #{userId,jdbcType=INTEGER}
+    	</if>
+    	<if test="civicsIdcard != null">
+    		and civics_idcard = #{civicsIdcard,jdbcType=VARCHAR}
+    	</if>
+    </where>
+  </select>
+</mapper>

@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.CivicsMapper" >
+  <resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.Civics" >
+    <id column="idcard" property="idcard" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="division_id" property="divisionId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="used_name" property="usedName" jdbcType="VARCHAR" />
+    <result column="nation" property="nation" jdbcType="VARCHAR" />
+    <result column="photo" property="photo" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="INTEGER" />
+    <result column="gender" property="gender" jdbcType="BIT" />
+    <result column="residence_permit" property="residencePermit" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="domicile_address" property="domicileAddress" jdbcType="VARCHAR" />
+    <result column="profession" property="profession" jdbcType="VARCHAR" />
+    <result column="education" property="education" jdbcType="BIT" />
+    <result column="marital_status" property="maritalStatus" jdbcType="BIT" />
+    <result column="military_status" property="militaryStatus" jdbcType="BIT" />
+    <result column="incharge" property="incharge" jdbcType="BIT" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_edit_time" property="lastEditTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    idcard, company_id, division_id, name, used_name, nation, photo, age, gender, residence_permit, 
+    phone, address, domicile_address, profession, education, marital_status, military_status, 
+    incharge, remark, create_time, last_edit_time
+  </sql>
+  
+  <select id="queryCivicsByIdcard" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from civics
+    where idcard = #{idcard,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from civics
+    where idcard = #{idcard,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.cetc.weiwen.entity.Civics" >
+    insert into civics (idcard, company_id, division_id, name, 
+      used_name, nation, photo, 
+      age, gender, residence_permit, 
+      phone, address, domicile_address, 
+      profession, education, marital_status, 
+      military_status, incharge, remark, 
+      create_time, last_edit_time)
+    values (#{idcard,jdbcType=VARCHAR}, #{companyId,jdbcType=INTEGER}, #{divisionId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{usedName,jdbcType=VARCHAR}, #{nation,jdbcType=VARCHAR}, #{photo,jdbcType=VARCHAR}, 
+      #{age,jdbcType=INTEGER}, #{gender,jdbcType=BIT}, #{residencePermit,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{domicileAddress,jdbcType=VARCHAR}, 
+      #{profession,jdbcType=VARCHAR}, #{education,jdbcType=BIT}, #{maritalStatus,jdbcType=BIT}, 
+      #{militaryStatus,jdbcType=BIT}, #{incharge,jdbcType=BIT}, #{remark,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{lastEditTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cetc.weiwen.entity.Civics" >
+    insert into civics
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="idcard != null" >
+        idcard,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="divisionId != null" >
+        division_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="usedName != null" >
+        used_name,
+      </if>
+      <if test="nation != null" >
+        nation,
+      </if>
+      <if test="photo != null" >
+        photo,
+      </if>
+      <if test="age != null" >
+        age,
+      </if>
+      <if test="gender != null" >
+        gender,
+      </if>
+      <if test="residencePermit != null" >
+        residence_permit,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="domicileAddress != null" >
+        domicile_address,
+      </if>
+      <if test="profession != null" >
+        profession,
+      </if>
+      <if test="education != null" >
+        education,
+      </if>
+      <if test="maritalStatus != null" >
+        marital_status,
+      </if>
+      <if test="militaryStatus != null" >
+        military_status,
+      </if>
+      <if test="incharge != null" >
+        incharge,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastEditTime != null" >
+        last_edit_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="idcard != null" >
+        #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="divisionId != null" >
+        #{divisionId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="usedName != null" >
+        #{usedName,jdbcType=VARCHAR},
+      </if>
+      <if test="nation != null" >
+        #{nation,jdbcType=VARCHAR},
+      </if>
+      <if test="photo != null" >
+        #{photo,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="gender != null" >
+        #{gender,jdbcType=BIT},
+      </if>
+      <if test="residencePermit != null" >
+        #{residencePermit,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="domicileAddress != null" >
+        #{domicileAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="profession != null" >
+        #{profession,jdbcType=VARCHAR},
+      </if>
+      <if test="education != null" >
+        #{education,jdbcType=BIT},
+      </if>
+      <if test="maritalStatus != null" >
+        #{maritalStatus,jdbcType=BIT},
+      </if>
+      <if test="militaryStatus != null" >
+        #{militaryStatus,jdbcType=BIT},
+      </if>
+      <if test="incharge != null" >
+        #{incharge,jdbcType=BIT},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditTime != null" >
+        #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.cetc.weiwen.entity.Civics" >
+    update civics
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="divisionId != null" >
+        division_id = #{divisionId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="usedName != null" >
+        used_name = #{usedName,jdbcType=VARCHAR},
+      </if>
+      <if test="nation != null" >
+        nation = #{nation,jdbcType=VARCHAR},
+      </if>
+      <if test="photo != null" >
+        photo = #{photo,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="gender != null" >
+        gender = #{gender,jdbcType=BIT},
+      </if>
+      <if test="residencePermit != null" >
+        residence_permit = #{residencePermit,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="domicileAddress != null" >
+        domicile_address = #{domicileAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="profession != null" >
+        profession = #{profession,jdbcType=VARCHAR},
+      </if>
+      <if test="education != null" >
+        education = #{education,jdbcType=BIT},
+      </if>
+      <if test="maritalStatus != null" >
+        marital_status = #{maritalStatus,jdbcType=BIT},
+      </if>
+      <if test="militaryStatus != null" >
+        military_status = #{militaryStatus,jdbcType=BIT},
+      </if>
+      <if test="incharge != null" >
+        incharge = #{incharge,jdbcType=BIT},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditTime != null" >
+        last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where idcard = #{idcard,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cetc.weiwen.entity.Civics" >
+    update civics
+    set company_id = #{companyId,jdbcType=INTEGER},
+      division_id = #{divisionId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      used_name = #{usedName,jdbcType=VARCHAR},
+      nation = #{nation,jdbcType=VARCHAR},
+      photo = #{photo,jdbcType=VARCHAR},
+      age = #{age,jdbcType=INTEGER},
+      gender = #{gender,jdbcType=BIT},
+      residence_permit = #{residencePermit,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      domicile_address = #{domicileAddress,jdbcType=VARCHAR},
+      profession = #{profession,jdbcType=VARCHAR},
+      education = #{education,jdbcType=BIT},
+      marital_status = #{maritalStatus,jdbcType=BIT},
+      military_status = #{militaryStatus,jdbcType=BIT},
+      incharge = #{incharge,jdbcType=BIT},
+      remark = #{remark,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP}
+    where idcard = #{idcard,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="queryCivicsLikeCivics" resultMap="BaseResultMap" parameterType="String">
+  	select 
+  	<include refid="Base_Column_List"></include>
+  	from civics
+  	<where>
+  		<if test="name != null">
+  			name like '%${name}%'
+  		</if>
+  		<if test="divisionId != null" >
+        	and division_id = #{divisionId,jdbcType=INTEGER}
+      </if>
+  	</where>
+  </select>
+  <select id="getCivicsList" resultMap="BaseResultMap" parameterType="java.util.List">
+  	select 
+  	<include refid="Base_Column_List"></include>
+  	from civics where idcard in
+  	<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+          #{item}       
+    </foreach>    
+  </select>
+</mapper>

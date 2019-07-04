@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.CompanyMapper" >
+  <resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.Company" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="employee_num" property="employeeNum" jdbcType="INTEGER" />
+    <result column="legal_person" property="legalPerson" jdbcType="VARCHAR" />
+    <result column="legal_idcard" property="legalIdcard" jdbcType="VARCHAR" />
+    <result column="legal_phone" property="legalPhone" jdbcType="VARCHAR" />
+    <result column="top_manager_name" property="topManagerName" jdbcType="VARCHAR" />
+    <result column="top_manager_phone" property="topManagerPhone" jdbcType="VARCHAR" />
+    <result column="attention_rank" property="attentionRank" jdbcType="BIT" />
+    <result column="credit_code" property="creditCode" jdbcType="VARCHAR" />
+    <result column="attention" property="attention" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_edit_time" property="lastEditTime" jdbcType="TIMESTAMP" />
+    <result column="org_id" property="orgId" jdbcType="INTEGER" />
+    <result column="company_type" property="companyType" jdbcType="TINYINT" />
+    <result column="idcard" property="idcard" jdbcType="INTEGER" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, name, address, employee_num, legal_person, legal_idcard, legal_phone, top_manager_name, 
+    top_manager_phone, attention_rank, credit_code, attention, remark, create_time, last_edit_time, 
+    org_id, company_type, idcard, user_name, phone
+  </sql>
+  
+  <!-- 根据企业统一社会编码查询公司信息 -->
+   <select id="getCompanyByCreditCode" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from company
+    where credit_code = #{creditCode,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getCompanyById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from company
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from company
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.cetc.weiwen.entity.Company" >
+    insert into company (id, name, address, 
+      employee_num, legal_person, legal_idcard, 
+      legal_phone, top_manager_name, top_manager_phone, 
+      attention_rank, credit_code, attention, 
+      remark, create_time, last_edit_time, 
+      org_id, company_type, idcard, 
+      user_name, phone)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{employeeNum,jdbcType=INTEGER}, #{legalPerson,jdbcType=VARCHAR}, #{legalIdcard,jdbcType=VARCHAR}, 
+      #{legalPhone,jdbcType=VARCHAR}, #{topManagerName,jdbcType=VARCHAR}, #{topManagerPhone,jdbcType=VARCHAR}, 
+      #{attentionRank,jdbcType=BIT}, #{creditCode,jdbcType=VARCHAR}, #{attention,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{lastEditTime,jdbcType=TIMESTAMP}, 
+      #{orgId,jdbcType=INTEGER}, #{companyType,jdbcType=TINYINT}, #{idcard,jdbcType=INTEGER}, 
+      #{userName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cetc.weiwen.entity.Company"
+  useGeneratedKeys="true" keyColumn="id" keyProperty="id"
+   >
+    insert into company
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="employeeNum != null" >
+        employee_num,
+      </if>
+      <if test="legalPerson != null" >
+        legal_person,
+      </if>
+      <if test="legalIdcard != null" >
+        legal_idcard,
+      </if>
+      <if test="legalPhone != null" >
+        legal_phone,
+      </if>
+      <if test="topManagerName != null" >
+        top_manager_name,
+      </if>
+      <if test="topManagerPhone != null" >
+        top_manager_phone,
+      </if>
+      <if test="attentionRank != null" >
+        attention_rank,
+      </if>
+      <if test="creditCode != null" >
+        credit_code,
+      </if>
+      <if test="attention != null" >
+        attention,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastEditTime != null" >
+        last_edit_time,
+      </if>
+      <if test="orgId != null" >
+        org_id,
+      </if>
+      <if test="companyType != null" >
+        company_type,
+      </if>
+      <if test="idcard != null" >
+        idcard,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeNum != null" >
+        #{employeeNum,jdbcType=INTEGER},
+      </if>
+      <if test="legalPerson != null" >
+        #{legalPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="legalIdcard != null" >
+        #{legalIdcard,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPhone != null" >
+        #{legalPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="topManagerName != null" >
+        #{topManagerName,jdbcType=VARCHAR},
+      </if>
+      <if test="topManagerPhone != null" >
+        #{topManagerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="attentionRank != null" >
+        #{attentionRank,jdbcType=BIT},
+      </if>
+      <if test="creditCode != null" >
+        #{creditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="attention != null" >
+        #{attention,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditTime != null" >
+        #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgId != null" >
+        #{orgId,jdbcType=INTEGER},
+      </if>
+      <if test="companyType != null" >
+        #{companyType,jdbcType=TINYINT},
+      </if>
+      <if test="idcard != null" >
+        #{idcard,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.cetc.weiwen.entity.Company" >
+    update company
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeNum != null" >
+        employee_num = #{employeeNum,jdbcType=INTEGER},
+      </if>
+      <if test="legalPerson != null" >
+        legal_person = #{legalPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="legalIdcard != null" >
+        legal_idcard = #{legalIdcard,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPhone != null" >
+        legal_phone = #{legalPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="topManagerName != null" >
+        top_manager_name = #{topManagerName,jdbcType=VARCHAR},
+      </if>
+      <if test="topManagerPhone != null" >
+        top_manager_phone = #{topManagerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="attentionRank != null" >
+        attention_rank = #{attentionRank,jdbcType=BIT},
+      </if>
+      <if test="creditCode != null" >
+        credit_code = #{creditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="attention != null" >
+        attention = #{attention,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditTime != null" >
+        last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=INTEGER},
+      </if>
+      <if test="companyType != null" >
+        company_type = #{companyType,jdbcType=TINYINT},
+      </if>
+      <if test="idcard != null" >
+        idcard = #{idcard,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cetc.weiwen.entity.Company" >
+    update company
+    set name = #{name,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      employee_num = #{employeeNum,jdbcType=INTEGER},
+      legal_person = #{legalPerson,jdbcType=VARCHAR},
+      legal_idcard = #{legalIdcard,jdbcType=VARCHAR},
+      legal_phone = #{legalPhone,jdbcType=VARCHAR},
+      top_manager_name = #{topManagerName,jdbcType=VARCHAR},
+      top_manager_phone = #{topManagerPhone,jdbcType=VARCHAR},
+      attention_rank = #{attentionRank,jdbcType=BIT},
+      credit_code = #{creditCode,jdbcType=VARCHAR},
+      attention = #{attention,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP},
+      org_id = #{orgId,jdbcType=INTEGER},
+      company_type = #{companyType,jdbcType=TINYINT},
+      idcard = #{idcard,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

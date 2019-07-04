@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.EventMapper">
+	<resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.Event" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="phase" property="phase" jdbcType="TINYINT" />
+    <result column="type_id" property="typeId" jdbcType="INTEGER" />
+    <result column="num_id" property="numId" jdbcType="INTEGER" />
+    <result column="level_id" property="levelId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="date" property="date" jdbcType="TIMESTAMP" />
+    <result column="place" property="place" jdbcType="VARCHAR" />
+    <result column="outline" property="outline" jdbcType="VARCHAR" />
+    <result column="money_involved" property="moneyInvolved" jdbcType="DECIMAL" />
+    <result column="money_unit" property="moneyUnit" jdbcType="VARCHAR" />
+    <result column="main_appeal" property="mainAppeal" jdbcType="VARCHAR" />
+    <result column="tooks_steps" property="tooksSteps" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="longitude" property="longitude" jdbcType="DOUBLE" />
+    <result column="latitude" property="latitude" jdbcType="DOUBLE" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_edit_time" property="lastEditTime" jdbcType="TIMESTAMP" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="chat_total" property="chatTotal" jdbcType="INTEGER" />
+    <result column="new_chat" property="newChat" jdbcType="VARCHAR" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+  </resultMap>
+	
+	<resultMap type="com.cetc.weiwen.vo.EventVo" id="EventVo" extends="BaseResultMap">
+	   <result column="level" property="level" jdbcType="INTEGER" />
+	   <result column="top" property="top" jdbcType="BIGINT" />
+	   <result column="no_read_count" property="noReadCount" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List" >
+    id, phase, type_id, num_id, level_id, name, date, place, outline, money_involved, 
+
+    money_unit, main_appeal, tooks_steps, status, longitude, latitude, 
+    create_time, last_edit_time, remark,chat_total,version
+
+  </sql>
+  
+  <select id="findAllEventId" resultType="java.lang.Integer">
+  	select id
+  	from event
+  	where event.status=1;
+  </select>
+  
+  <select id="queryEventById" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List"></include>
+  	from event
+  	where 1=1
+  	and id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertEvent" parameterType="com.cetc.weiwen.entity.Event" 
+  	useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    insert into event (phase, type_id, 
+      num_id, level_id, name, 
+      date, place, outline, 
+      money_involved, money_unit, main_appeal, 
+      tooks_steps, status, 
+      longitude, latitude,
+      create_time, last_edit_time, remark
+      )
+    values (#{phase,jdbcType=TINYINT}, #{typeId,jdbcType=INTEGER}, 
+      #{numId,jdbcType=INTEGER}, #{levelId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{date,jdbcType=TIMESTAMP}, #{place,jdbcType=VARCHAR}, #{outline,jdbcType=VARCHAR}, 
+      #{moneyInvolved,jdbcType=DECIMAL}, #{moneyUnit,jdbcType=VARCHAR}, #{mainAppeal,jdbcType=VARCHAR}, 
+      #{tooksSteps,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
+      #{longitude,jdbcType=DOUBLE}, #{latitude,jdbcType=DOUBLE},
+      #{createTime,jdbcType=TIMESTAMP}, #{lastEditTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <!-- 根据特定排序规则，返回事件列表(首页信息) -->
+
+	<select id="getEventListOrder" resultMap="EventVo">
+		select
+		e.id,e.phase,e.name,e.last_edit_time,event_level.level,e.new_chat,e.status,IFNULL(eu.topping,0)
+		as top ,
+		(e.chat_total - eu.read_number) as no_read_count
+		from `event` as e
+		inner join event_user as eu on e.id=eu.event_id
+		inner join user as u on eu.user_id =u.id
+		inner join event_level on event_level.id=e.level_id
+		where e.status !=2 and u.id=#{userId,jdbcType=INTEGER}
+		order by IFNULL(eu.topping,0) DESC,
+		<if test="order == 1">
+		event_level.level,
+		</if>
+		<if test="order == 2">
+		e.type_id,
+		</if>
+		e.last_edit_time DESC
+	</select>
+  
+  <update id="updateEventById" parameterType="com.cetc.weiwen.entity.Event" >
+    update event
+    <set >
+      <if test="phase != null" >
+        phase = #{phase,jdbcType=TINYINT},
+      </if>
+      <if test="typeId != null" >
+        type_id = #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="numId != null" >
+        num_id = #{numId,jdbcType=INTEGER},
+      </if>
+      <if test="levelId != null" >
+        level_id = #{levelId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null" >
+        date = #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="place != null" >
+        place = #{place,jdbcType=VARCHAR},
+      </if>
+      <if test="outline != null" >
+        outline = #{outline,jdbcType=VARCHAR},
+      </if>
+      <if test="moneyInvolved != null" >
+        money_involved = #{moneyInvolved,jdbcType=DECIMAL},
+      </if>
+      <if test="moneyUnit != null" >
+        money_unit = #{moneyUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="mainAppeal != null" >
+        main_appeal = #{mainAppeal,jdbcType=VARCHAR},
+      </if>
+      <if test="tooksSteps != null" >
+        tooks_steps = #{tooksSteps,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="longitude != null" >
+        longitude = #{longitude,jdbcType=DOUBLE},
+      </if>
+      <if test="latitude != null" >
+        latitude = #{latitude,jdbcType=DOUBLE},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditTime != null" >
+        last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="chatTotal != null" >
+        chat_total = #{chatTotal,jdbcType=INTEGER},
+      </if>
+      <if test="newChat != null" >
+        new_chat = #{newChat,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

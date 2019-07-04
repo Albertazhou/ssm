@@ -1,0 +1,177 @@
+package com.cetc.weiwen.controller;
+
+import java.util.HashMap;
+import java.util.List;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+
+import com.cetc.weiwen.entity.Event;
+import com.cetc.weiwen.entity.User;
+import com.cetc.weiwen.result.Result;
+import com.cetc.weiwen.service.UserService;
+import com.cetc.weiwen.vo.UserVo;
+import com.github.pagehelper.PageInfo;
+
+/**
+ * 操作相关的控制器
+ * 
+ * @author liqf
+ *
+ */
+
+@RestController
+@RequestMapping(value = "/user")
+public class UserController {
+
+	@Autowired
+	private UserService userService;
+	
+
+	/**
+	 * 事件(群)审核 enventToExamine
+	 * 
+	 * @return
+	 */
+	@PutMapping(value = "/{id}/event/{eventId}", produces = { "application/json;charset=UTF-8" })
+	public Result<String> enventToExamine(@PathVariable(name = "id", required = true) Integer id,
+			@PathVariable(name = "eventId", required = true) Integer eventId, @RequestBody Event event) {
+		int count = userService.updataEventToExamine(id, eventId, event);
+		if (count > 0) {
+			return Result.successMsg("审核操作成功");
+		}
+		return Result.errorMsg("审核操作失败");
+	}
+
+	
+
+	/**
+	 * 删除事件--->逻辑删除(更新事件状态)
+	 * 
+	 * @return
+	 */
+	@DeleteMapping(value = "/{id}/event/{eventId}", produces = { "application/json;charset=UTF-8" })
+	public Result<String> deleteUserEvent(@PathVariable(name = "id", required = true) Integer id,
+			@PathVariable(name = "eventId", required = true) Integer eventId) {
+		int count = userService.deleteUserEvent(id, eventId);
+		if (count > 0) {
+			return Result.successMsg("删除成功");
+		}
+		return Result.errorMsg("删除失败");
+	}
+
+	/**
+	 * 按名称分页查找用户信息
+	 * 
+	 * @param pageNum
+	 * @param pageSize
+	 * @param name
+	 * @return
+	 */
+	@GetMapping(produces = { "application/json;charset=UTF-8" })
+	public Result<PageInfo<UserVo>> getUserList(@RequestParam(name = "pageNum", required = false) Integer pageNum,
+			@RequestParam(name = "pageSize", required = false) Integer pageSize,
+			@RequestParam(name = "name", required = false) String name,
+			@RequestParam(name = "orgId", required = false) Integer orgId) {
+		PageInfo<UserVo> userPag = userService.getUserList(pageNum, pageSize, name, orgId);
+		return Result.success(userPag);
+	}
+
+	/**
+	 * 添加用户 todo
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@PostMapping(produces = { "application/json;charset=UTF-8" })
+	public Result<String> addUser(@Validated @RequestBody User user) {
+		int count = userService.insertPartUser(user);
+		if (count > 0) {
+			return Result.successMsg("添加成功");
+		} else if (count == -2) {
+			return Result.errorMsg("用户已经存在");
+		}
+		return Result.errorMsg("添加失败");
+	}
+
+	/**
+	 * 编辑用户信息
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@PutMapping(produces = { "application/json;charset=UTF-8" })
+	public Result<String> editUser(@RequestBody User user) {
+		int count = userService.updateById(user);
+		if (count > 0) {
+			return Result.successMsg("更新成功");
+		} else if (count == -1) {
+			return Result.errorMsg("密码错误");
+		} else if (count == -2) {
+			return Result.errorMsg("用户不存在");
+		}
+		return Result.errorMsg("更新失败");
+	}
+
+	/**
+	 * 删除id对应的用户
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@DeleteMapping(value = "/{id}", produces = { "application/json;charset=UTF-8" })
+	public Result<String> delUser(@PathVariable(name = "id", required = true) Integer id) {
+		int count = userService.deleteById(id);
+		if (count > 0) {
+			return Result.successMsg("删除成功");
+		}
+		return Result.errorMsg("删除失败");
+	}
+
+	/**
+	 * 获取用户详细
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@GetMapping(value = "/{id}", produces = { "application/json;charset=UTF-8" })
+	public Result<UserVo> getUser(@PathVariable(name = "id", required = true) Integer id) {
+		UserVo user = userService.queryUserById(id);
+
+		return Result.success(user);
+	}
+
+	/**
+	 * 获取用户通讯录列表
+	 * 
+	 * @param userName
+	 * @return
+	 */
+	@GetMapping(value="/addrbook",produces= {"application/json;charset=UTF-8"})
+	public Result<Object> getUserList(
+			@RequestParam(name="userName",required=false)String userName){
+		User user = new User();
+		user.setUsername(userName);
+
+		List<HashMap<String, Object>> mapList = userService.getUserList(user);
+
+		if (mapList.size() > 0) {
+			return Result.success(mapList);
+		} else {
+			return Result.errorMsg("没有用户信息！");
+		}
+	}
+
+
+}

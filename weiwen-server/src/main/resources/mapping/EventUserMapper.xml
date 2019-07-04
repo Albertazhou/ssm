@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.EventUserMapper" >
+  <resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.EventUser" >
+    <result column="event_id" property="eventId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="topping" property="topping" jdbcType="INTEGER" />
+    <result column="read_number" property="readNumber" jdbcType="INTEGER" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="BaseResultMapVo" type="com.cetc.weiwen.vo.EventUserVo" >
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <association property="user" column="{id=user_id}"
+    	select="com.cetc.weiwen.mapper.UserMapper.getUserById"></association>
+    <association property="event" column="{id=event_id}"
+    	select="com.cetc.weiwen.mapper.EventMapper.queryEventById"></association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    event_id, user_id, type, create_time,topping,read_number,version
+  </sql>
+  
+  <!-- 根据事件id和用户id查询 -->
+  <select id="queryEventUserById" resultMap="BaseResultMap"  parameterType="com.cetc.weiwen.entity.EventUser" >
+  select 
+  <include refid="Base_Column_List"></include>
+  from event_user
+  where   event_id = #{eventId,jdbcType=INTEGER} and user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertEventUser" parameterType="com.cetc.weiwen.entity.EventUser" >
+    insert into event_user (event_id, user_id, type, create_time)
+    values (#{eventId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER},
+    	#{createTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <insert id="batchInsertEventUser" parameterType="com.cetc.weiwen.entity.EventUser">
+  	insert into event_user (event_id, user_id, type, create_time)
+    values 
+    <foreach collection="list" index="index" item="item" separator=",">
+     (#{item.eventId,jdbcType=INTEGER},
+     #{item.userId,jdbcType=INTEGER},
+     #{item.type,jdbcType=INTEGER},
+     #{item.createTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.cetc.weiwen.entity.EventUser" >
+    insert into event_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="eventId != null" >
+        event_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="eventId != null" >
+        #{eventId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="getEventUserVoListByEventUser" resultMap="BaseResultMapVo" 
+  	parameterType="com.cetc.weiwen.entity.EventUser">
+  	select
+  	<include refid="Base_Column_List"></include>
+  	from event_user
+  	<where>
+  		<if test="eventId != null" >
+        	event_id = #{eventId,jdbcType=INTEGER}
+      	</if>
+      	<if test="userId != null" >
+        	and user_id = #{userId,jdbcType=INTEGER}
+      	</if>
+      	<if test="type != null" >
+        	and type = #{type,jdbcType=INTEGER}
+      	</if>
+  	</where>
+  </select>
+  
+ 
+  
+  <select id="getEventUserVo" resultMap="BaseResultMapVo" 
+  	parameterType="com.cetc.weiwen.entity.EventUser">
+  	select
+  	<include refid="Base_Column_List"></include>
+  	from event_user
+  	<where>
+  		<if test="eventId != null" >
+        	event_id = #{eventId,jdbcType=INTEGER}
+      	</if>
+      	<if test="userId != null" >
+        	and user_id = #{userId,jdbcType=INTEGER}
+      	</if>
+      	<if test="type != null" >
+        	and type = #{type,jdbcType=INTEGER}
+      	</if>
+  	</where>
+  </select>
+  
+   <delete id="batchDelteEventUser">
+	   delete from event_user where event_id=#{eventId,jdbcType=INTEGER} and 
+	     user_id in
+	     <foreach collection="ids" item="item" open="(" separator="," close=")"  >
+	      #{item,jdbcType=INTEGER}
+	     </foreach>
+  </delete>
+  
+  <!-- 修改-->
+  <update id="updateEventUserById" parameterType="com.cetc.weiwen.entity.EventUser" >
+    update event_user 
+    <set >
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="topping != null" >
+        topping = #{topping,jdbcType=BIGINT},
+      </if>
+      <if test="readNumber != null" >
+        read_number = #{readNumber,jdbcType=INTEGER},
+      </if>
+       version=version+1
+    </set>
+    where event_id = #{eventId,jdbcType=INTEGER} and user_id = #{userId,jdbcType=INTEGER} and version=#{version,jdbcType=INTEGER}
+  </update>
+</mapper>

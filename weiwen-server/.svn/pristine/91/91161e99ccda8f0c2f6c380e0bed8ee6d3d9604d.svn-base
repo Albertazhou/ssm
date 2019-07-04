@@ -1,0 +1,47 @@
+package com.cetc.weiwen.entity;
+
+public class Position {
+    private Integer id;
+    
+    private Integer uuid;
+    
+    private String name;
+
+    private Integer pOrder;
+
+    public Integer getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(Integer uuid) {
+		this.uuid = uuid;
+	}
+
+	
+    
+    
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+
+    public Integer getPOrder() {
+        return pOrder;
+    }
+
+    public void setPOrder(Integer pOrder) {
+        this.pOrder = pOrder;
+    }
+}

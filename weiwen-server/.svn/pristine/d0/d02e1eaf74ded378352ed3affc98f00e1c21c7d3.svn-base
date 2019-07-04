@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.EventChatMapper">
+	<resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.EventChat">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="event_id" property="eventId" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<resultMap type="com.cetc.weiwen.vo.EventChatVo" id="EventChatVoMap"
+		extends="BaseResultMap">
+		<result column="photo" property="photo" jdbcType="VARCHAR" />
+		<result column="real_name" property="realName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, event_id, user_id, content, create_time 
+	</sql>
+
+
+
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from event_chat
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from event_chat
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<!-- 根据事件id读取群消息 -->
+	<select id="getEventChatByEventId" resultMap="EventChatVoMap">
+
+		select
+		c.event_id,c.user_id,c.content,c.create_time,u.photo ,u.real_name
+		 from event_chat c join user u on c.user_id=u.id where
+		c.user_id=#{eventId,jdbcType=INTEGER} order by c.create_time;
+	</select>
+	
+	
+	<!-- 根据事件id和(小于)消息id读取群消息 -->
+	<select id="getEventChatByEventIdAndSmllerChatId" resultMap="EventChatVoMap">
+	 <![CDATA[
+	select
+		c.id,c.event_id,c.user_id,c.content,c.create_time,u.photo ,u.real_name
+		 from event_chat c join user u on c.user_id=u.id where 
+		c.event_id=#{eventId,jdbcType=INTEGER} and c.id<#{chatId,jdbcType=INTEGER}
+		order by c.create_time desc limit 20;	]]> 
+		
+	</select>
+	
+	
+	
+	<!-- 根据事件id和(大于)消息id读取群消息 -->
+	<select id="getEventChatByEventIdAndBiggerChatId" resultMap="EventChatVoMap">
+	<![CDATA[
+	select
+		c.id,c.event_id,c.user_id,c.content,c.create_time,u.photo ,u.real_name
+		 from event_chat c join user u on c.user_id=u.id where
+		c.user_id=#{arg0} 
+		]]> 
+		order by id desc limit 1;
+	</select>
+
+	<!-- 插入一条群聊消息 -->
+	<insert id="insertChatInfo" useGeneratedKeys="true" keyProperty="id" parameterType="com.cetc.weiwen.entity.EventChat">
+		insert into event_chat (event_id, user_id,
+		content, create_time)
+		values (#{eventId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+		#{content,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+	</insert>
+
+	
+
+	
+</mapper>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.MediaMapper" >
+  <resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.Media" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="TINYINT" />
+    <result column="fun_type" property="funType" jdbcType="TINYINT" />
+    <result column="general_id" property="generalId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_edit_time" property="lastEditTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, user_id, url, type, fun_type, general_id, create_time, last_edit_time
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from media
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from media
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.cetc.weiwen.entity.Media"
+   useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    insert into media (id, user_id, url, 
+      type, fun_type, general_id, 
+      create_time, last_edit_time)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, 
+      #{type,jdbcType=TINYINT}, #{funType,jdbcType=TINYINT}, #{generalId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{lastEditTime,jdbcType=TIMESTAMP})
+  </insert>
+  <select id="getMediaListByGeneralIdAndFunType" resultType="java.lang.Integer">
+    select
+    <include refid="Base_Column_List" />
+    from media
+    where general_id = #{generalId,jdbcType=INTEGER} and fun_type=#{funType,jdbcType=INTEGER}
+  </select>
+  
+  <update id="updateGeneralIdAndFunTypeById">
+        update media 
+        set general_id=#{generalId,jdbcType=INTEGER},
+            fun_type=#{funType,jdbcType=TINYINT}
+        where id in
+        <foreach item = "item" index = "index" collection = "ids" open = "(" separator = "," close = ")">
+        #{item}
+        </foreach>
+	</update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cetc.weiwen.entity.Media" >
+    update media
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="funType != null" >
+        fun_type = #{funType,jdbcType=TINYINT},
+      </if>
+      <if test="generalId != null" >
+        general_id = #{generalId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditTime != null" >
+        last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cetc.weiwen.entity.Media" >
+    update media
+    set user_id = #{userId,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR},
+      type = #{type,jdbcType=TINYINT},
+      fun_type = #{funType,jdbcType=TINYINT},
+      general_id = #{generalId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <insert id="batchInsertMedia" parameterType="com.cetc.weiwen.entity.Media">
+  	insert into media (user_id, url, 
+      type, fun_type, general_id, 
+      create_time, last_edit_time)
+    values 
+    <foreach collection="list" index="index" item="media" separator=",">
+    	(#{media.userId,jdbcType=INTEGER}, #{media.url,jdbcType=VARCHAR}, 
+      #{media.type,jdbcType=TINYINT}, #{media.funType,jdbcType=TINYINT}, #{media.generalId,jdbcType=INTEGER}, 
+      #{media.createTime,jdbcType=TIMESTAMP}, #{media.lastEditTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+  
+  <select id="getMediaList" parameterType="com.cetc.weiwen.entity.Media"
+  	 resultMap="BaseResultMap">
+ 	select 
+ 	<include refid="Base_Column_List"></include>
+ 	from media
+ 	<where>
+ 		<if test="userId != null">
+ 			user_id = #{userId,jdbcType=INTEGER}
+ 		</if>
+ 		<if test="type != null">
+ 			and type = #{type,jdbcType=TINYINT}
+ 		</if>
+ 		<if test="funType != null" >
+        	and fun_type = #{funType,jdbcType=TINYINT}
+      	</if>
+      	<if test="generalId != null" >
+        	and general_id = #{generalId,jdbcType=INTEGER}
+      	</if>
+ 	</where>
+ </select>
+</mapper>

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.UserMapper" >
+	<resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.User">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="username" property="username" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="real_name" property="realName" jdbcType="VARCHAR" />
+		<result column="position_id" property="positionId" jdbcType="INTEGER" />
+		<result column="status" property="status" jdbcType="TINYINT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="last_edit_time" property="lastEditTime"
+			jdbcType="TIMESTAMP" />
+		<result column="photo" property="photo" jdbcType="VARCHAR" />
+		<result column="piny_name" property="pinyName" jdbcType="VARCHAR" />
+		<result column="org_id" property="orgId" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="UserVo" type="com.cetc.weiwen.vo.UserVo" extends="BaseResultMap">
+		<result column="real_name" property="label" jdbcType="VARCHAR" />
+		<result column="position_name" property="positionName" jdbcType="VARCHAR" />
+		<result column="org_name" property="orgName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+
+	<sql id="Base_Column_List">
+		id, username, password, real_name, position_id, status,
+		create_time,
+		phone,
+		last_edit_time,email,photo,piny_name,org_id
+	</sql>
+	
+	<select id="findUserListByEventId" resultMap="BaseResultMap">
+		select
+		`user`.*
+		from user 
+		inner join event_user on `user`.id=event_user.user_id
+		inner join `event` on `event`.id=event_user.event_id
+		where `event`.id=#{eventId,jdbcType=INTEGER};
+	</select>
+	
+	<select id="getUserListByOrgId" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where org_id = #{orgId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getUserById" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryUserByPhone" resultMap="BaseResultMap">
+		select * from user 
+		where status=1
+		and phone=#{phone,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="queryUserById" resultMap="UserVo">
+		select
+		  user.id as id , username, real_name,position.name position_name,organization.name as org_name,
+		  create_time,phone,last_edit_time,email,photo,piny_name
+		from user,position,organization
+		where user.org_id=organization.uuid and position.id=user.position_id and user.id= #{id,jdbcType=INTEGER}
+	</select>
+	<!-- 通过名称查找用户信息 -->
+	<select id="queryUserByName" resultMap="UserVo">
+		select
+		  user.id as id , username, real_name,position.name position_name,organization.name as org_name,
+		  create_time,phone,last_edit_time,email,photo,piny_name
+		  from user,position,organization
+		 where user.org_id=organization.uuid and position.id=user.position_id  and user.status=1
+		 <if test="name != null">
+			and piny_name like
+			concat('',#{name,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+	<!-- 查找某个组织机构下面的有的人员 modify by zhouc -->
+	<select id="queryUserByOrgId" resultMap="UserVo">
+		select
+		u.id as id , username, real_name,p.name position_name,o.name as org_name,
+		create_time,phone,last_edit_time,email,photo,piny_name
+		from
+		((organization o right join user u on u.org_id=o.uuid)
+		right join position p on p.id=u.position_id)
+		right join function_position fp on u.position_id=fp.position_id
+		where
+		u.org_id=#{orgId,jdbcType=INTEGER}
+		order by fp.order_num;
+		
+		</select>
+	<delete id="deleteByPrimaryKey">
+		delete from user
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insert" parameterType="com.cetc.weiwen.entity.User">
+		insert into user (id,
+		username, password,
+		real_name, position_id,
+		status, create_time, phone,
+		last_edit_time,email,photo,piny_name)
+		values (#{id,jdbcType=INTEGER},
+		#{username,jdbcType=VARCHAR},
+		#{password,jdbcType=VARCHAR},
+		#{realName,jdbcType=VARCHAR}, #{positionId,jdbcType=INTEGER},
+		#{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP},
+		#{phone,jdbcType=VARCHAR},
+		#{lastEditTime,jdbcType=TIMESTAMP},#{email,jdbcType=VARCHAR}
+		,#{photo,jdbcType=VARCHAR}
+		,#{pinyName,jdbcType=VARCHAR)
+	</insert>
+	<insert id="insertSelective" parameterType="com.cetc.weiwen.entity.User">
+		insert into user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="username != null">
+				username,
+			</if>
+			<if test="password != null">
+				password,
+			</if>
+			<if test="realName != null">
+				real_name,
+			</if>
+			<if test="positionId != null">
+				position_id,
+			</if>
+
+			<if test="status != null">
+				status,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="phone != null">
+				phone,
+			</if>
+			<if test="lastEditTime != null">
+				last_edit_time,
+			</if>
+			<if test="email != null">
+				email,
+			</if>
+			<if test="photo != null">
+				photo,
+			</if>
+			<if test="pinyName != null">
+				piny_name,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="username != null">
+				#{username,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="realName != null">
+				#{realName,jdbcType=VARCHAR},
+			</if>
+			<if test="positionId != null">
+				#{positionId,jdbcType=INTEGER},
+			</if>
+
+			<if test="status != null">
+				#{status,jdbcType=TINYINT},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="phone != null">
+				#{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="lastEditTime != null">
+				#{lastEditTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastEditTime != null">
+				#{email,jdbcType=VARCHAR},
+			</if>
+			<if test="photo != null">
+				#{photo,jdbcType=VARCHAR},
+			</if>
+			<if test="pinyName != null">
+				#{pinyName,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+    <!-- ；逻辑删除用户  -->
+    <update id="updateByIdAndStatus">
+		update user
+		set	status =0
+		where id = #{id,jdbcType=INTEGER} and status=1
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="com.cetc.weiwen.entity.User">
+		update user
+		<set>
+			<if test="username != null">
+				username = #{username,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="realName != null">
+				real_name = #{realName,jdbcType=VARCHAR},
+			</if>
+			<if test="positionId != null">
+				position_id = #{positionId,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="lastEditTime != null">
+				last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="photo != null">
+				photo=#{photo,jdbcType=VARCHAR},
+			</if>
+			<if test="pinyName != null">
+				piny_name=#{pinyName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.cetc.weiwen.entity.User">
+		update user
+		set
+		username = #{username,jdbcType=VARCHAR},
+		password =#{password,jdbcType=VARCHAR},
+		real_name = #{realName,jdbcType=VARCHAR},
+		position_id = #{positionId,jdbcType=INTEGER},
+		status =#{status,jdbcType=TINYINT},
+		create_time =#{createTime,jdbcType=TIMESTAMP},
+		phone = #{phone,jdbcType=VARCHAR},
+		last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP},
+		email = #{email,jdbcType=VARCHAR},
+		photo=#{photo,jdbcType=VARCHAR},
+		piny_name=#{pinyName,jdbcType=VARCHAR}
+		where id =
+		#{id,jdbcType=INTEGER}
+	</update>
+	
+	<select id="getUserList" resultType="java.util.HashMap" parameterType="com.cetc.weiwen.entity.User">
+  	SELECT u.id,u.username as userName,u.real_name as realName,u.photo, ELT( INTERVAL( CONV( HEX( LEFT( CONVERT( u.real_name
+	USING GBK ) , 1 ) ) , 16, 10 ) , 0xB0A1, 0xB0C5, 0xB2C1, 0xB4EE, 0xB6EA, 0xB7A2, 0xB8C1, 
+	0xB9FE, 0xBBF7, 0xBFA6, 0xC0AC, 0xC2E8, 0xC4C3, 0xC5B6, 0xC5BE, 0xC6DA, 0xC8BB, 0xC8F6, 0xCBFA, 0xCDDA, 0xCEF4, 0xD1B9, 0xD4D1 ) ,
+ 	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z' ) AS letter
+	FROM user u
+	<where>
+		<if test="realName != null">real_name like '%${realName}%'</if>
+	</where>
+	ORDER BY letter
+  </select>
+</mapper>

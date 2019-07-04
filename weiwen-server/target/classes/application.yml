@@ -1,0 +1,24 @@
+#激活哪一个环境的配置文件
+#公共配置
+spring:
+  profiles:
+    active: dev
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  time-zone: GMT+8
+---
+#开发环境
+spring:
+  profiles: dev
+---
+#测试环境
+spring:
+  profiles: test
+---
+#生产环境
+spring:
+  profiles: prd
+
+#Ower加载Mybatis配制文件
+#mybatis.mapper-locations=classpath:mappering/*Mapper.xml
+

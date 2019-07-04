@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.ControlPersonMapper" >
+  <resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.ControlPerson" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="idcard" property="idcard" jdbcType="VARCHAR" />
+    <result column="contradiction_category" property="contradictionCategory" jdbcType="TINYINT" />
+    <result column="person_level" property="personLevel" jdbcType="TINYINT" />
+    <result column="property" property="property" jdbcType="TINYINT" />
+    <result column="pedigree" property="pedigree" jdbcType="TINYINT" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+    <result column="source" property="source" jdbcType="TINYINT" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_edit_time" property="lastEditTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="VoBaseResultMap" type="com.cetc.weiwen.vo.ControlPersonVo">
+  	<id column="id" property="id" jdbcType="INTEGER" />
+    <result column="contradiction_category" property="contradictionCategory" jdbcType="TINYINT" />
+    <result column="person_level" property="personLevel" jdbcType="TINYINT" />
+    <result column="property" property="property" jdbcType="TINYINT" />
+    <result column="pedigree" property="pedigree" jdbcType="TINYINT" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+    <result column="source" property="source" jdbcType="TINYINT" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_edit_time" property="lastEditTime" jdbcType="TIMESTAMP" />
+    <association property="civics" column="idcard" javaType="com.cetc.weiwen.entity.Civics">
+    	<id column="idcard" property="idcard" jdbcType="VARCHAR" />
+	    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+	    <result column="division_id" property="divisionId" jdbcType="INTEGER" />
+	    <result column="name" property="name" jdbcType="VARCHAR" />
+	    <result column="used_name" property="usedName" jdbcType="VARCHAR" />
+	    <result column="nation" property="nation" jdbcType="VARCHAR" />
+	    <result column="photo" property="photo" jdbcType="VARCHAR" />
+	    <result column="age" property="age" jdbcType="INTEGER" />
+	    <result column="gender" property="gender" jdbcType="BIT" />
+	    <result column="residence_permit" property="residencePermit" jdbcType="VARCHAR" />
+	    <result column="phone" property="phone" jdbcType="VARCHAR" />
+	    <result column="address" property="address" jdbcType="VARCHAR" />
+	    <result column="domicile_address" property="domicileAddress" jdbcType="VARCHAR" />
+	    <result column="profession" property="profession" jdbcType="VARCHAR" />
+	    <result column="education" property="education" jdbcType="BIT" />
+	    <result column="marital_status" property="maritalStatus" jdbcType="BIT" />
+	    <result column="military_status" property="militaryStatus" jdbcType="BIT" />
+	    <result column="incharge" property="incharge" jdbcType="BIT" />
+	    <result column="remark" property="remark" jdbcType="VARCHAR" />
+	    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="last_edit_time" property="lastEditTime" jdbcType="TIMESTAMP" />
+    </association>
+  </resultMap>
+  
+  <resultMap type="com.cetc.weiwen.vo.ControlPersonVo" id="BaseResultMapVo">
+  	<id column="id" property="id" jdbcType="INTEGER" />
+    <result column="contradiction_category" property="contradictionCategory" jdbcType="TINYINT" />
+    <result column="person_level" property="personLevel" jdbcType="TINYINT" />
+    <result column="property" property="property" jdbcType="TINYINT" />
+    <result column="pedigree" property="pedigree" jdbcType="TINYINT" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+    <result column="source" property="source" jdbcType="TINYINT" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_edit_time" property="lastEditTime" jdbcType="TIMESTAMP" />
+    <association property="civics" column="{idcard=idcard}" 
+    	select="com.cetc.weiwen.mapper.CivicsMapper.queryCivicsByIdcard"></association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, idcard, contradiction_category, person_level, property, pedigree, grade, source, 
+    status, remark, user_id, create_time, last_edit_time
+  </sql>
+  
+  <select id="queryControlPersonById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from control_person
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from control_person
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insertControlPerson" parameterType="com.cetc.weiwen.entity.ControlPerson" >
+    insert into control_person (idcard, contradiction_category, 
+      person_level, property, pedigree, 
+      grade, source, status, 
+      remark, user_id, create_time, 
+      last_edit_time)
+    values (#{idcard,jdbcType=VARCHAR}, #{contradictionCategory,jdbcType=TINYINT}, 
+      #{personLevel,jdbcType=TINYINT}, #{property,jdbcType=TINYINT}, #{pedigree,jdbcType=TINYINT}, 
+      #{grade,jdbcType=INTEGER}, #{source,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
+      #{remark,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{lastEditTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cetc.weiwen.entity.ControlPerson" >
+    insert into control_person
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="idcard != null" >
+        idcard,
+      </if>
+      <if test="contradictionCategory != null" >
+        contradiction_category,
+      </if>
+      <if test="personLevel != null" >
+        person_level,
+      </if>
+      <if test="property != null" >
+        property,
+      </if>
+      <if test="pedigree != null" >
+        pedigree,
+      </if>
+      <if test="grade != null" >
+        grade,
+      </if>
+      <if test="source != null" >
+        source,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastEditTime != null" >
+        last_edit_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="idcard != null" >
+        #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="contradictionCategory != null" >
+        #{contradictionCategory,jdbcType=TINYINT},
+      </if>
+      <if test="personLevel != null" >
+        #{personLevel,jdbcType=TINYINT},
+      </if>
+      <if test="property != null" >
+        #{property,jdbcType=TINYINT},
+      </if>
+      <if test="pedigree != null" >
+        #{pedigree,jdbcType=TINYINT},
+      </if>
+      <if test="grade != null" >
+        #{grade,jdbcType=INTEGER},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=TINYINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditTime != null" >
+        #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateControlPerson" parameterType="com.cetc.weiwen.entity.ControlPerson" >
+    update control_person
+    <set >
+      <if test="idcard != null" >
+        idcard = #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="contradictionCategory != null" >
+        contradiction_category = #{contradictionCategory,jdbcType=TINYINT},
+      </if>
+      <if test="personLevel != null" >
+        person_level = #{personLevel,jdbcType=TINYINT},
+      </if>
+      <if test="property != null" >
+        property = #{property,jdbcType=TINYINT},
+      </if>
+      <if test="pedigree != null" >
+        pedigree = #{pedigree,jdbcType=TINYINT},
+      </if>
+      <if test="grade != null" >
+        grade = #{grade,jdbcType=INTEGER},
+      </if>
+      <if test="source != null" >
+        source = #{source,jdbcType=TINYINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditTime != null" >
+        last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cetc.weiwen.entity.ControlPerson" >
+    update control_person
+    set idcard = #{idcard,jdbcType=VARCHAR},
+      contradiction_category = #{contradictionCategory,jdbcType=TINYINT},
+      person_level = #{personLevel,jdbcType=TINYINT},
+      property = #{property,jdbcType=TINYINT},
+      pedigree = #{pedigree,jdbcType=TINYINT},
+      grade = #{grade,jdbcType=INTEGER},
+      source = #{source,jdbcType=TINYINT},
+      status = #{status,jdbcType=TINYINT},
+      remark = #{remark,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="queryControlPersonList" resultMap="VoBaseResultMap" 
+  		parameterType="com.cetc.weiwen.vo.ControlPersonVo">
+  	select
+  	c.id, c.idcard, c.contradiction_category, c.person_level, c.property, c.pedigree, c.grade, c.source, 
+    c.status, c.remark, c.user_id, c.create_time, c.last_edit_time,
+    v.idcard, v.company_id, v.division_id, v.name, v.used_name, v.nation, v.photo, v.age, v.gender, v.residence_permit, 
+    v.phone, v.address, v.domicile_address, v.profession, v.education, v.marital_status, v.military_status, 
+    v.incharge, v.remark, v.create_time, v.last_edit_time
+  	from control_person c left join civics v on c.idcard = v.idcard
+  	<where>
+  		<if test="contradictionCategory != null">
+  			and c.contradiction_category = #{contradictionCategory,jdbcType=TINYINT}
+  		</if>
+  		<if test="personLevel != null">
+  			and c.person_level = #{personLevel,jdbcType=TINYINT}
+  		</if>
+  		<if test="property != null">
+  			and c.property = #{property,jdbcType=TINYINT}
+  		</if>
+  		<if test="pedigree != null">
+  			and c.pedigree = #{pedigree,jdbcType=TINYINT}
+  		</if>
+  		<if test="userId != null">
+  			and c.user_id = #{userId,jdbcType=INTEGER}
+  		</if>
+  		<if test="status != null">
+  			and c.status = #{status,jdbcType=TINYINT}
+  		</if>
+  		<if test="source != null">
+  			and c.source = #{source,jdbcType=TINYINT}
+  		</if>
+  		<if test="civics != null and civics.divisionId != null">
+  			and v.division_id = #{civics.divisionId,jdbcType=INTEGER}
+  		</if>
+  	</where>
+  </select>
+  
+  <select id="getControlPersonList" resultMap="BaseResultMap"
+  		parameterType="com.cetc.weiwen.entity.ControlPerson">
+  	select 
+  	<include refid="Base_Column_List"></include>
+  	from control_person
+  	<where>
+  		<if test="idcard != null">
+  			idcard = #{idcard,jdbcType=VARCHAR}
+  		</if>
+  		<if test="contradictionCategory != null">
+  			and c.contradiction_category = #{contradictionCategory,jdbcType=TINYINT}
+  		</if>
+  		<if test="personLevel != null">
+  			and c.person_level = #{personLevel,jdbcType=TINYINT}
+  		</if>
+  		<if test="property != null">
+  			and c.property = #{property,jdbcType=TINYINT}
+  		</if>
+  		<if test="pedigree != null">
+  			and c.pedigree = #{pedigree,jdbcType=TINYINT}
+  		</if>
+  		<if test="userId != null">
+  			and c.user_id = #{userId,jdbcType=INTEGER}
+  		</if>
+  		<if test="status != null">
+  			and c.status = #{status,jdbcType=TINYINT}
+  		</if>
+  		<if test="source != null">
+  			and c.source = #{source,jdbcType=TINYINT}
+  		</if>
+  	</where>
+  </select>
+  
+  <select id="queryControlPersonVoById" resultMap="BaseResultMapVo" parameterType="Integer">
+ 	select
+ 	<include refid="Base_Column_List"></include> 	
+ 	from control_person
+ 	where 1=1
+ 	and id = #{id,jdbcType=INTEGER}
+ </select>
+</mapper>

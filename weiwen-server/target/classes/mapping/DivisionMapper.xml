@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.DivisionMapper" >
+   <resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.Division">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="ucode" jdbcType="VARCHAR" property="ucode" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="parent_ucode" jdbcType="VARCHAR" property="parentUcode" />
+    <result column="division_level" jdbcType="INTEGER" property="divisionLevel" />
+  </resultMap>
+  
+ 
+  <sql id="Base_Column_List" >
+    id, ucode, name, parent_ucode, division_level
+  </sql>
+  <!-- 版本id大于divisionVId的所有Division -->
+   <select id="findByVidGreaThan" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from division
+    where id > #{divisionVId,jdbcType=INTEGER}
+  </select>
+</mapper>

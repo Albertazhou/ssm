@@ -1,0 +1,91 @@
+##Mybatis配置
+mybatis:
+  type-aliases-package: com.cetc.weiwen.entity
+  mapper-locations: classpath:mapping/*.xml
+  
+##spring配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.93.80.138:3306/weiwen?characterEncoding=UTF-8&SSL=true
+    username: weiwen
+    password: weiwen
+    type: com.alibaba.druid.pool.DruidDataSource
+  jackson: 
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 200Mb
+      max-request-size: 200Mb
+  aop:
+    auto: true
+#redis相关配置
+  redis:
+      #数据库索引
+      database: 1
+      host: 47.93.173.50
+      port: 6379
+      password: inspeeding
+      jedis:
+        pool:
+          #最大连接数
+          max-active: 8
+          #最大阻塞等待时间(负数表示没限制)
+          max-wait: -1
+          #最大空闲
+          max-idle: 8
+          #最小空闲
+          min-idle: 0
+      #连接超时时间
+      timeout: 10000
+          
+ ##servlet配置
+server:
+  port: 8101
+  servlet:
+    context-path: /weiwen-api
+  tomcat:
+    uri-encoding: UTF-8
+ ##打印mybatisSql语句
+logging:
+  level:
+    com.cetc.weiwen.mapper: trace
+    
+##多媒体存储
+win:
+  video:
+    uri: E:/upload/company/video/
+  images:
+    uri: E:/upload/company/images/
+  voice:
+    uri: E:/upload/company/voice/
+  other:
+    uri: E:/upload/company/other/
+    
+linux:
+  video:
+    uri: /server/video/
+  images:
+    uri: /server/images/
+  voice:
+    uri: /server/voice/
+  other:
+    uri: /server/other/
+
+    
+##fastdfs分布式文件存储
+fdfs:
+  connect-timeout:  5000
+  so-timeout: 15000
+  thumb-image:
+    width: 150
+    height: 150
+  tracker-list:
+  - 47.93.80.138:22122
+  - ##第二个服务器
+
+
+# 路径拦截相关    
+global:
+  tokenExcludePathPatterns: /tests/**,/weiwen-api/user,/v2/api-docs,/configuration/ui,/error,/swagger-resources,/m/sysUser/doLogin,/m/sysUser/getAuthCode,/api/**,/**/**/export**  

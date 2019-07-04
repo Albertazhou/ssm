@@ -1,0 +1,54 @@
+package com.cetc.weiwen.commons.constant;
+
+/**系统常量类
+ * 
+ * @author liqiaofei
+ * 2018年9月28日
+ */
+public class Constant {
+
+	 /**
+     *   app的用户id前缀
+     */
+    public static final String USER_APP_PREFIX="A_U_";
+    
+    /**
+     *   app的token前缀
+     */
+    public static final String USER_TOKEN_APP_PREFIX="a_token_u_";
+    
+    /**
+     *   web的用户id前缀
+     */
+    public static final String USER_WEB_PREFIX="W_U_";
+    
+    /**
+     *   web的token前缀
+     */
+    public static final String USER_TOKEN_WEB_PREFIX="w_token_u_";
+    
+    /**
+     *   token的过期时间
+     */
+    public static final int USER_CACHE_TIME = 24*60*30;
+    
+    /**
+     *   二维码的过期时间Qrc_
+     */
+    public static final int QRCODE_CACHE_TIME = 60;
+    
+    /**
+     *   二维码在redis中的前缀
+     */
+    public static final String QRCODE ="WEIWEN_CODE_";
+    
+    /**
+     * 推送队列key
+     */
+    public static final String PUSH_SYSTEM ="PUSH_SYSTEM";
+    
+    /**
+     * 事件与用户关系的列表key
+     */
+    public static final String EVENT_GROUP_USER_EVENT_ID ="EVENT_GROUP_USER_";
+}

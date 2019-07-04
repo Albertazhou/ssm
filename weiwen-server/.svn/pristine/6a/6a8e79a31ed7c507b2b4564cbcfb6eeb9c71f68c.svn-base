@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.EventProcessMapper" >
+	<resultMap type="com.cetc.weiwen.entity.EventProcess" id="BaseResultMap">
+		<id column="event_id" property="eventId" jdbcType="INTEGER"/>
+		<result column="record" property="record" jdbcType="TINYINT"/>
+		<result column="face" property="face" jdbcType="TINYINT"/>
+		<result column="involved" property="involved" jdbcType="TINYINT"/>
+		<result column="message" property="message" jdbcType="TINYINT"/>
+		<result column="sign" property="sign" jdbcType="TINYINT"/>
+		<result column="prosecute" property="prosecute" jdbcType="TINYINT"/>
+		<result column="finished" property="finished" jdbcType="TINYINT"/>
+	</resultMap>
+	
+	<sql id="Base_List_Sql">
+		event_id, record, face, involved, message, sign, prosecute, education, possession, reply, finished
+	</sql>
+	
+	<select id="queryEventProcess" resultMap="BaseResultMap"
+		parameterType="com.cetc.weiwen.entity.EventProcess">
+		select
+		<include refid="Base_List_Sql"></include>
+		from event_process
+		<where>
+			<if test="eventId != null">
+				and event_id = #{eventId,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getEventProcessById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    	select 
+    	<include refid="Base_List_Sql" />
+    	from event_process
+    	where event_id = #{eventId,jdbcType=INTEGER}
+  	</select>
+  	
+	<insert id="insertEventProcess" parameterType="com.cetc.weiwen.entity.EventProcess"
+		useGeneratedKeys="true" keyColumn="event_id" keyProperty="eventId">
+    insert into event_process (event_id, record, face, 
+      involved, message, sign, 
+      prosecute, education, possession, 
+      reply, finished)
+    values (#{eventId,jdbcType=INTEGER}, #{record,jdbcType=TINYINT}, #{face,jdbcType=TINYINT}, 
+      #{involved,jdbcType=TINYINT}, #{message,jdbcType=TINYINT}, #{sign,jdbcType=TINYINT}, 
+      #{prosecute,jdbcType=TINYINT}, #{education,jdbcType=TINYINT}, #{possession,jdbcType=TINYINT}, 
+      #{reply,jdbcType=TINYINT}, #{finished,jdbcType=TINYINT})
+  </insert>
+  
+  <update id="updateEventProcess" parameterType="com.cetc.weiwen.entity.EventProcess">
+    update event_process
+    <set>
+      <if test="record != null">
+        record = #{record,jdbcType=TINYINT},
+      </if>
+      <if test="face != null">
+        face = #{face,jdbcType=TINYINT},
+      </if>
+      <if test="involved != null">
+        involved = #{involved,jdbcType=TINYINT},
+      </if>
+      <if test="message != null">
+        message = #{message,jdbcType=TINYINT},
+      </if>
+      <if test="sign != null">
+        sign = #{sign,jdbcType=TINYINT},
+      </if>
+      <if test="prosecute != null">
+        prosecute = #{prosecute,jdbcType=TINYINT},
+      </if>
+      <if test="education != null">
+        education = #{education,jdbcType=TINYINT},
+      </if>
+      <if test="possession != null">
+        possession = #{possession,jdbcType=TINYINT},
+      </if>
+      <if test="reply != null">
+        reply = #{reply,jdbcType=TINYINT},
+      </if>
+      <if test="finished != null">
+        finished = #{finished,jdbcType=TINYINT},
+      </if>
+    </set>
+    where event_id = #{eventId,jdbcType=INTEGER}
+  </update>
+</mapper>

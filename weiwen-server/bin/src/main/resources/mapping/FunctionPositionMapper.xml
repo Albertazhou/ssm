@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cetc.weiwen.mapper.FunctionPositionMapper" >
+  <resultMap id="BaseResultMap" type="com.cetc.weiwen.entity.FunctionPosition" >
+    <result column="function_type_id" property="functionTypeId" jdbcType="INTEGER" />
+    <result column="position_id" property="positionId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    function_type_id, position_id
+  </sql>
+  
+  <insert id="insert" parameterType="com.cetc.weiwen.entity.FunctionPosition" >
+    insert into function_position (function_type_id, position_id)
+    values (#{functionTypeId,jdbcType=INTEGER}, #{positionId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cetc.weiwen.entity.FunctionPosition" >
+    insert into function_position
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="functionTypeId != null" >
+        function_type_id,
+      </if>
+      <if test="positionId != null" >
+        position_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="functionTypeId != null" >
+        #{functionTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="positionId != null" >
+        #{positionId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+</mapper>
